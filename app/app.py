@@ -40,40 +40,5 @@ register_tortoise(
     add_exception_handlers=True
 )
 
-@app.get("/items")
-async def get_items():
-    return await Item.all()
-
-@app.get("/items/{item_id}")
-async def get_item(item_id: int):
-    item = await Item.get(id=item_id)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return item
-
-@app.post("/items/")
-async def create_item(name: str, description: str):
-    item = await Item.create(name=name, description=description)
-    return {"id": item.id, "name": item.name, "description": item.description}
-
-@app.put("/items/{item_id}")
-async def update_item(item_id: int, name: str, description: str):
-    item = await Item.get(id=item_id)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    item.name = name
-    item.description = description
-    await item.save()
-    return item
-
-@app.delete("/items/{item_id}")
-async def delete_item(item_id: int):
-    item = await Item.get(id=item_id)
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    await item.delete()
-    return {"message": f"Item {item_id} deleted successfully"}
-
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
